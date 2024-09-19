@@ -7,7 +7,7 @@
 
 using namespace std;
 
-const char VERSION[] = "0.1.0";
+const char VERSION[] = "0.1.1";
 bool debug_logging = false;
 int disable_press_time_ms = 17;
 int wait_before_disable_ms = 10;
