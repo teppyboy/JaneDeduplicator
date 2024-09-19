@@ -9,7 +9,7 @@ using namespace std;
 
 const char VERSION[] = "0.1.0";
 bool debug_logging = false;
-int disable_press_time_ms = 15;
+int disable_press_time_ms = 17;
 int wait_before_disable_ms = 10;
 
 void dbgPrint(const char *fmt...)
