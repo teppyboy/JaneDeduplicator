@@ -25,7 +25,9 @@ void dbgPrint(const char *fmt...)
 void cancel()
 {
     dbgPrint("Duplicate detected, cancelling the mouse press...\n");
-    HWND hwnd = GetForegroundWindow();
+    POINT cursorPt;
+    GetCursorPos(&cursorPt);
+    HWND hwnd = WindowFromPoint(cursorPt);
     this_thread::sleep_for(chrono::milliseconds(wait_before_disable_ms));
     EnableWindow(hwnd, false);
     this_thread::sleep_for(chrono::milliseconds(disable_press_time_ms));
