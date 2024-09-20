@@ -48,10 +48,12 @@ void cancel()
         GetCursorPos(&cursorPt);
         releaseMouse(hwnd, cursorPt);
     } else {
-        dbgPrint("Button down mouse left button\n");
         releaseMouse(hwnd, cursorPt);
-        this_thread::sleep_for(chrono::milliseconds(1));
-        SendMessage(hwnd, WM_LBUTTONDOWN, 0, MAKELPARAM(cursorPt.x, cursorPt.y));
+        this_thread::sleep_for(chrono::milliseconds(2));
+        dbgPrint("Button down mouse left button\n");
+        POINT currentPt;
+        GetCursorPos(&currentPt);
+        SendMessage(hwnd, WM_LBUTTONDOWN, 0, MAKELPARAM(currentPt.x, currentPt.y));
     }
 }
 
@@ -113,6 +115,7 @@ BOOL WINAPI CtrlHandler(DWORD fdwCtrlType)
 
 int main(int argc, char *argv[])
 {
+    SetConsoleTitleA(LPCSTR("Jane Doe"));
     printf("JaneDeduplicator v%s - https://github.com/teppyboy/JaneDeduplicator\n", VERSION);
     printf("\n!!! EARLY IMPLEMENTATION MAY NOT WORK AT ALL !!!\n\n");
     for (int i = 0; i < argc; i++)
