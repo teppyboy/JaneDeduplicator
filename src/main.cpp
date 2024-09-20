@@ -11,6 +11,7 @@ const char VERSION[] = "0.1.1";
 bool debug_logging = false;
 int disable_press_time_ms = 17;
 int wait_before_disable_ms = 10;
+int isPressed = 0;
 
 void dbgPrint(const char *fmt...)
 {
@@ -22,17 +23,30 @@ void dbgPrint(const char *fmt...)
     printf(fmt);
 }
 
+void releaseMouse(HWND hwnd, POINT cPos)
+{
+    dbgPrint("Releasing mouse left button\n");
+    SendMessage(hwnd, WM_LBUTTONUP, 0, MAKELPARAM(cPos.x, cPos.y));
+}
+
 void cancel()
 {
     dbgPrint("Duplicate detected, cancelling the mouse press...\n");
     POINT cursorPt;
     GetCursorPos(&cursorPt);
+    // Release the mouse first
     HWND hwnd = WindowFromPoint(cursorPt);
+    releaseMouse(hwnd, cursorPt);
     this_thread::sleep_for(chrono::milliseconds(wait_before_disable_ms));
     EnableWindow(hwnd, false);
     this_thread::sleep_for(chrono::milliseconds(disable_press_time_ms));
     dbgPrint("Reactivating foreground window...\n");
     EnableWindow(hwnd, true);
+    if (isPressed == 1) {
+        POINT cursorPt;
+        GetCursorPos(&cursorPt);
+        releaseMouse(hwnd, cursorPt);
+    }
 }
 
 void loop()
@@ -46,13 +60,15 @@ void loop()
         SHORT keyState = GetKeyState(VK_LBUTTON);
         if (prevKeyState != keyState)
         {
-            if (debug_logging) {
+            if (debug_logging)
+            {
                 printf("[DEBUG]: Recently pressed: %i\n", recentlyPressed);
             }
             // Key state < 0 means pressed.
             if (keyState < 0)
             {
                 dbgPrint("pressed\n");
+                isPressed = 1;
                 if (recentlyPressed > 0)
                 {
                     thread sugoma(cancel);
@@ -67,6 +83,7 @@ void loop()
             else
             {
                 dbgPrint("not pressed\n");
+                isPressed = 0;
             }
             prevKeyState = keyState;
         }
