@@ -49,7 +49,6 @@ void cancel()
         releaseMouse(hwnd, cursorPt);
     } else {
         releaseMouse(hwnd, cursorPt);
-        this_thread::sleep_for(chrono::milliseconds(2));
         dbgPrint("Button down mouse left button\n");
         POINT currentPt;
         GetCursorPos(&currentPt);
