@@ -34,18 +34,24 @@ void cancel()
     dbgPrint("Duplicate detected, cancelling the mouse press...\n");
     POINT cursorPt;
     GetCursorPos(&cursorPt);
-    // Release the mouse first
     HWND hwnd = WindowFromPoint(cursorPt);
+    // Release the mouse first
     releaseMouse(hwnd, cursorPt);
     this_thread::sleep_for(chrono::milliseconds(wait_before_disable_ms));
     EnableWindow(hwnd, false);
     this_thread::sleep_for(chrono::milliseconds(disable_press_time_ms));
     dbgPrint("Reactivating foreground window...\n");
     EnableWindow(hwnd, true);
-    if (isPressed == 1) {
+    cout << "is pressed " << isPressed << endl;
+    if (isPressed == 0) {
         POINT cursorPt;
         GetCursorPos(&cursorPt);
         releaseMouse(hwnd, cursorPt);
+    } else {
+        dbgPrint("Button down mouse left button\n");
+        releaseMouse(hwnd, cursorPt);
+        this_thread::sleep_for(chrono::milliseconds(1));
+        SendMessage(hwnd, WM_LBUTTONDOWN, 0, MAKELPARAM(cursorPt.x, cursorPt.y));
     }
 }
 
